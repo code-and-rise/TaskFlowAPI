@@ -6,4 +6,8 @@ const router = express.Router();
 //     res.send("This is GET /api/auth");
 // });
 
+router.post("/login", (req, res) => {
+    res.send(req.body);
+})
+
 module.exports = router;
