@@ -18,7 +18,7 @@ TaskFlow API - RESTful backend for task management system built with Node.js.
 ### (TO-DO) Bonus
 - filters (status, from/to date, title)
 - pagination
-- !!! simple analytics endpoint (overview, status distribution, productivity)
+- simple analytics endpoint (overview, status distribution, productivity)
 
 ## API structure
 ```
