@@ -14,16 +14,30 @@ function isValidDueDate(date) {
 
 router.use(authMiddleware);
 
-// Get all tasks
+// Get all tasks + Pagination
 router.get("/", async (req, res) => {
     try {
-        const tasks = await _tasks.findAll({
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const offset = (page - 1) * limit;
+
+        const tasks = await _tasks.findAndCountAll({
             where: {
                 user_id: req.user.id
-            }
+            },
+            limit,
+            offset,
+            order: [
+                ["created_at", "DESC"]
+            ]
         })
 
-        res.status(200).json(tasks);
+        res.status(200).json({
+            total: tasks.count,
+            page,
+            totalPages: Math.ceil(tasks.count / limit),
+            tasks: tasks.rows
+        });
 
     } catch (error) {
         console.error(error);
