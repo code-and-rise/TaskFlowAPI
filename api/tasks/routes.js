@@ -5,6 +5,13 @@ const {
 const authMiddleware = require("../auth/authMiddleware");
 const router = express.Router();
 
+function isValidDueDate(date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return new Date(date) >= today;
+}
+
 router.use(authMiddleware);
 
 // Get all tasks
@@ -72,6 +79,12 @@ router.put("/:id", async (req, res) => {
             due_date
         } = req.body;
 
+        if (!isValidDueDate(due_date)) {
+            return res.status(400).json({
+                message: "Due date cannot be in the past."
+            })
+        }
+
         await task.update({
             title,
             description,
@@ -90,13 +103,6 @@ router.put("/:id", async (req, res) => {
         })
     }
 })
-
-function isValidDueDate(date) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return new Date(date) >= today;
-}
 
 // Create task
 router.post("/", async (req, res) => {
