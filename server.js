@@ -10,7 +10,10 @@ const app = express();
 
 initDatabase();
 
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}));
 
 app.use("/api", apiRoutes);
 
