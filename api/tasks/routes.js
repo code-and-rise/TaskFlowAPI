@@ -3,6 +3,9 @@ const {
     _tasks
 } = require("../../models/data");
 const authMiddleware = require("../auth/authMiddleware");
+const {
+    Op
+} = require("sequelize");
 const router = express.Router();
 
 function isValidDueDate(date) {
@@ -17,15 +20,39 @@ router.use(authMiddleware);
 // Get all tasks + Pagination
 router.get("/", async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
+        const {
+            status,
+            title,
+            from,
+            to,
+            page = 1,
+            limit = 5
+        } = req.query;
         const offset = (page - 1) * limit;
 
+        const where = {};
+
+        where.user_id = req.user.id;
+
+        if (status) {
+            where.status = status;
+        }
+
+        if (title) {
+            where.title = {
+                [Op.iLike]: `%${title}%`
+            };
+        }
+
+        if (from && to) {
+            where.due_date = {
+                [Op.between]: [from, to]
+            }
+        }
+
         const tasks = await _tasks.findAndCountAll({
-            where: {
-                user_id: req.user.id
-            },
-            limit,
+            where,
+            limit: parseInt(limit),
             offset,
             order: [
                 ["created_at", "DESC"]
@@ -34,7 +61,7 @@ router.get("/", async (req, res) => {
 
         res.status(200).json({
             total: tasks.count,
-            page,
+            page: parseInt(page),
             totalPages: Math.ceil(tasks.count / limit),
             tasks: tasks.rows
         });
