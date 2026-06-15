@@ -91,6 +91,13 @@ router.put("/:id", async (req, res) => {
     }
 })
 
+function isValidDueDate(date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return new Date(date) >= today;
+}
+
 // Create task
 router.post("/", async (req, res) => {
     try {
@@ -100,6 +107,13 @@ router.post("/", async (req, res) => {
             status,
             due_date
         } = req.body;
+
+        if (!isValidDueDate(due_date)) {
+            return res.status(400).json({
+                message: "Due date cannot be in the past."
+            })
+        }
+
         const newTask = await _tasks.create({
             user_id: req.user.id,
             title,
