@@ -1,9 +1,13 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 const apiRoutes = require("./api/routes");
+const initDatabase = require("./config/db-init");
 
 const app = express();
 
-app.use(express.json());
+initDatabase();
+
+app.use(bodyParser.json());
 
 app.use("/api", apiRoutes);
 
@@ -13,6 +17,7 @@ app.get("/", (req, res) => {
     })
 })
 
-app.listen(3000, () => {
-    console.log("Server is running on PORT 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 })
