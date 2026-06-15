@@ -6,9 +6,6 @@ const {
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-// router.get("/", (req, res) => {
-//     res.send("This is GET /api/auth");
-// });
 
 // Login route
 router.post("/login", async (req, res) => {
@@ -40,6 +37,7 @@ router.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign({
+            id: user.id,
             name: user.name
         }, 'secretKey', {
             expiresIn: '1h'
@@ -77,7 +75,6 @@ router.post("/register", async (req, res) => {
                 message: "User already exists"
             });
         }
-
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);

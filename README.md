@@ -9,7 +9,6 @@ TaskFlow API – RESTful backend for task management system built with Node.js.
 ### Auth
 - register
 - login
-- logout
 - token auth
 
 ### Core
@@ -26,7 +25,8 @@ TaskFlow API – RESTful backend for task management system built with Node.js.
 POST /api/auth/login
 POST /api/auth/register
 GET /api/tasks
+GET /api/tasks/:id
 POST /api/tasks
-PUT /api/tasks/{id}
-DELETE /api/tasks/{id}
+PUT /api/tasks/:id
+DELETE /api/tasks/:id
 ```
